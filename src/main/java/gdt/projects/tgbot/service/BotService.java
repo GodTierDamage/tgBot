@@ -38,7 +38,6 @@ public class BotService extends TelegramLongPollingBot {
     private static final String ADD_INCOME = "/addincome";
     private static final String ADD_SPEND = "/addspend";
 
-
     @Value("${bot.api.key}")
     private String apiKey;
 
@@ -66,15 +65,20 @@ public class BotService extends TelegramLongPollingBot {
             }
             putPreviousCommand(message.getChatId(), message.getText());
             execute(response);
-            if(repository.findActiveChatByChatId(chatId).isEmpty()) {
-                ActiveChat activeChat = new ActiveChat();
-                activeChat.setChatId(chatId);
-                repository.save(activeChat);
-            }
+            chackAndSaveActiveChatInRepo(chatId);
+
         } catch (TelegramApiException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void chackAndSaveActiveChatInRepo(Long chatId) {
+        if(repository.findActiveChatByChatId(chatId).isEmpty()) {
+            ActiveChat activeChat = new ActiveChat();
+            activeChat.setChatId(chatId);
+            repository.save(activeChat);
         }
     }
 
@@ -97,7 +101,7 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     private void putPreviousCommand(Long chatId, String command) {
-        previousCommands.computeIfAbsent(chatId, value -> new ArrayList<String>()).add(command);
+        previousCommands.computeIfAbsent(chatId, value -> new ArrayList<>()).add(command);
     }
 
     private String getPreviousCommand(Long chatId) {

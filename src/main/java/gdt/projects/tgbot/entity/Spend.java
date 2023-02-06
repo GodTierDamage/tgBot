@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -19,4 +20,7 @@ public class Spend {
 
     @Column(name = "SPEND")
     private BigDecimal spend;
+
+    @Column(name = "TIME_OF_OPERATION")
+    private Timestamp timeOfOperation;
 }
