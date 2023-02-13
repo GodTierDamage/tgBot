@@ -47,7 +47,7 @@ class FinanceServiceTest {
         String message = financeService.addFinanceOperation("/addIncome", price, 300L);
 
 
-        assertEquals(expected, new String(message.getBytes(), Charsets.UTF_8));
+        assertEquals(expected, message);
     }
 
     @Test
@@ -55,8 +55,8 @@ class FinanceServiceTest {
     public void addSpendTest() {
         String price = "200";
         String expected = "–асход в размере " + price + " был успешно добавлен.";
-        String spendMessage = financeService.addFinanceOperation("/nan", price, 300L);
+        String spendMessage = financeService.addFinanceOperation("/addSpend", price, 300L);
 
-        assertEquals(expected, new String(spendMessage.getBytes(), Charsets.UTF_8));
+        assertEquals(expected, spendMessage);
     }
 }

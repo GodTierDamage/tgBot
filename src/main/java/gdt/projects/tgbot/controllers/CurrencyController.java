@@ -22,6 +22,7 @@ public class CurrencyController {
     private final StatsService statsService;
 
     @PostMapping("/getCurrencies")
+    @ApiOperation(value = "Получить курсы валют из центрального банка")
     public List<ValuteCursOnDate> getValuteCursOnDate() throws Exception {
         return cbr.getCurrenciesFromCbr();
     }
@@ -29,7 +30,7 @@ public class CurrencyController {
     @GetMapping("/getStats")
     @ApiOperation(value = "Получение количества пополнений, превышающих определенную сумму")
     public int getStatsAboutIncomesThatGreaterThen(@RequestParam(value = "amount")BigDecimal amount) {
-        return statsService.getCountOfIncomesThatGraterThan(amount);
+        return statsService.getCountOfIncomesThatGreaterThan(amount);
     }
 
     @GetMapping("/getIncomes")

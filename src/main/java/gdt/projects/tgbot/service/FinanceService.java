@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,6 @@ public class FinanceService {
             spend.setSpend(new BigDecimal(price));
             message.append("Расход в размере ").append(price).append(" был успешно добавлен.");
         }
-        return message.toString();
+        return new String(message.toString().getBytes(), StandardCharsets.UTF_8);
     }
 }

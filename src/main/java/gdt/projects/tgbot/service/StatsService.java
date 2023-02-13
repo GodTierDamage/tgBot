@@ -15,7 +15,7 @@ public class StatsService {
 
     private final StatsRepository repository;
 
-    public int getCountOfIncomesThatGraterThan(BigDecimal amount) {
+    public int getCountOfIncomesThatGreaterThan(BigDecimal amount) {
         return repository.getCountOfIncomesThatGraterThan(amount);
     }
 

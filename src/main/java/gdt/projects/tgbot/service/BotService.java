@@ -1,11 +1,13 @@
 package gdt.projects.tgbot.service;
 
-import gdt.projects.tgbot.dto.ValuteCursOnDate;
 import gdt.projects.tgbot.entity.ActiveChat;
+import gdt.projects.tgbot.enums.BotCommandsEnum;
+import gdt.projects.tgbot.exception.CommandNotFoundException;
 import gdt.projects.tgbot.repository.ActiveChatRepository;
+import gdt.projects.tgbot.service.CommandsHandler.BotServiceCommandsHandler;
+import gdt.projects.tgbot.service.CommandsHandler.CommandsHandlerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -16,27 +18,27 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static gdt.projects.tgbot.enums.BotCommandsEnum.*;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class BotService extends TelegramLongPollingBot {
 
-    private final CentralRussianBankService cbr;
     @Lazy
     private final ActiveChatRepository repository;
     private final FinanceService financeService;
 
     private Map<Long, List<String>> previousCommands = new ConcurrentHashMap<>();
 
-    private static final String CURRENT_RATES = "/currentrates";
-    private static final String ADD_INCOME = "/addincome";
-    private static final String ADD_SPEND = "/addspend";
+    private static final List<BotCommandsEnum> commands = Arrays.asList(
+            ADD_INCOME,
+            CURRENT_RATES,
+            ADD_SPEND
+    );
 
     @Value("${bot.api.key}")
     private String apiKey;
@@ -51,21 +53,15 @@ public class BotService extends TelegramLongPollingBot {
             SendMessage response = new SendMessage();
             Long chatId = message.getChatId();
             response.setChatId(String.valueOf(chatId));
-            if(CURRENT_RATES.equalsIgnoreCase(message.getText())) {
-                for(ValuteCursOnDate valuteCursOnDate : cbr.getCurrenciesFromCbr()) {
-                    response.setText(StringUtils.defaultIfBlank(response.getText(), "") +
-                    valuteCursOnDate.getName() + "-" + valuteCursOnDate.getCourse() + "\n");
-                }
-            } else if(ADD_INCOME.equalsIgnoreCase(message.getText())) {
-                response.setText("Отправьте пожалуйста сумму полученного дохода.");
-            } else if(ADD_SPEND.equalsIgnoreCase(message.getText())) {
-                response.setText("Отправьте пожалуйста сумму расходов.");
-            } else {
-                response.setText(financeService.addFinanceOperation(getPreviousCommand(message.getChatId()), message.getText(), message.getChatId()));
+            try {
+                BotServiceCommandsHandler commandsHandler = findCommand(message);
+                commandsHandler.processCommand(response);
+            } catch (CommandNotFoundException e) {
+                e.printStackTrace();
             }
             putPreviousCommand(message.getChatId(), message.getText());
             execute(response);
-            chackAndSaveActiveChatInRepo(chatId);
+            checkAndSaveActiveChatInRepo(chatId);
 
         } catch (TelegramApiException e) {
             e.printStackTrace();
@@ -74,7 +70,20 @@ public class BotService extends TelegramLongPollingBot {
         }
     }
 
-    private void chackAndSaveActiveChatInRepo(Long chatId) {
+    private BotServiceCommandsHandler findCommand(Message message) {
+        BotCommandsEnum commandType = getCommandType(message);
+        return CommandsHandlerFactory.getCommandsHandler(commandType);
+    }
+
+    private BotCommandsEnum getCommandType(Message message)throws CommandNotFoundException {
+        BotCommandsEnum command = commands.stream()
+                .filter(curCommand -> curCommand.toString().equalsIgnoreCase(message.getText()))
+                .findFirst()
+                .orElseThrow(() -> new CommandNotFoundException("Команда не найдена"));
+        return command;
+    }
+
+    private void checkAndSaveActiveChatInRepo(Long chatId) {
         if(repository.findActiveChatByChatId(chatId).isEmpty()) {
             ActiveChat activeChat = new ActiveChat();
             activeChat.setChatId(chatId);

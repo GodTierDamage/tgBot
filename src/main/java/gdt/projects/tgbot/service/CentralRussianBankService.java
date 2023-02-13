@@ -4,6 +4,7 @@ import gdt.projects.tgbot.dto.GetCursOnDateXml;
 import gdt.projects.tgbot.dto.GetCursOnDateXmlResponse;
 import gdt.projects.tgbot.dto.ValuteCursOnDate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+@Service
 public class CentralRussianBankService extends WebServiceTemplate {
 
     @Value("${cbr.api.url}")
