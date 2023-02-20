@@ -1,4 +1,4 @@
-package gdt.projects.tgbot.service.CommandsHandler;
+package gdt.projects.tgbot.service.commandsHandler;
 
 import gdt.projects.tgbot.enums.BotCommandsEnum;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

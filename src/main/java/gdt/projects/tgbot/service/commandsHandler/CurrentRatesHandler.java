@@ -1,11 +1,10 @@
-package gdt.projects.tgbot.service.CommandsHandler;
+package gdt.projects.tgbot.service.commandsHandler;
 
 import gdt.projects.tgbot.dto.ValuteCursOnDate;
 import gdt.projects.tgbot.enums.BotCommandsEnum;
 import gdt.projects.tgbot.service.CentralRussianBankService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 

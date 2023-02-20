@@ -1,10 +1,6 @@
 package gdt.projects.tgbot.enums;
 
-import gdt.projects.tgbot.service.CentralRussianBankService;
-import gdt.projects.tgbot.service.CommandsHandler.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 public enum BotCommandsEnum {

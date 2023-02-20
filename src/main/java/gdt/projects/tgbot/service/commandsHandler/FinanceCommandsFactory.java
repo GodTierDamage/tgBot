@@ -1,4 +1,4 @@
-package gdt.projects.tgbot.service.CommandsHandler;
+package gdt.projects.tgbot.service.commandsHandler;
 
 import gdt.projects.tgbot.enums.BotCommandsEnum;
 import gdt.projects.tgbot.exception.CommandNotFoundException;
@@ -14,20 +14,20 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CommandsHandlerFactory {
+public class FinanceCommandsFactory {
 
-    private static Map<BotCommandsEnum, BotServiceCommandsHandler> commandsMap;
+    private static Map<BotCommandsEnum, FinanceSave> financeSaveMap;
 
     @Autowired
-    private CommandsHandlerFactory(List<BotServiceCommandsHandler> commands) {
-        commandsMap = commands
-                .stream()
-                .collect(Collectors.toUnmodifiableMap(BotServiceCommandsHandler::getType, Function.identity()));
+    private FinanceCommandsFactory(List<FinanceSave> financeSaveList) {
+        financeSaveMap = financeSaveList.stream()
+                .collect(Collectors.toUnmodifiableMap(FinanceSave::getType, Function.identity()));
     }
 
-    public static BotServiceCommandsHandler getCommandsHandler(BotCommandsEnum type) {
+    public static FinanceSave getFinanceSaveService(BotCommandsEnum type) {
         return Optional
-                .ofNullable(commandsMap.get(type))
+                .ofNullable(financeSaveMap.get(type))
                 .orElseThrow(() -> new CommandNotFoundException("Команда не найдена"));
     }
+
 }

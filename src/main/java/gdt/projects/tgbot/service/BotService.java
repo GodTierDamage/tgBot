@@ -4,8 +4,8 @@ import gdt.projects.tgbot.entity.ActiveChat;
 import gdt.projects.tgbot.enums.BotCommandsEnum;
 import gdt.projects.tgbot.exception.CommandNotFoundException;
 import gdt.projects.tgbot.repository.ActiveChatRepository;
-import gdt.projects.tgbot.service.CommandsHandler.BotServiceCommandsHandler;
-import gdt.projects.tgbot.service.CommandsHandler.CommandsHandlerFactory;
+import gdt.projects.tgbot.service.commandsHandler.BotServiceCommandsHandler;
+import gdt.projects.tgbot.service.commandsHandler.CommandsHandlerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,15 +98,20 @@ public class BotService extends TelegramLongPollingBot {
 
     public void sendNotificationToAllActiveChats(String message, Set<Long> chatIds) {
         for(Long id : chatIds) {
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(String.valueOf(id));
-            sendMessage.setText(message);
+            SendMessage sendMessage = generateMessage(message,id);
             try {
                 execute(sendMessage);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private SendMessage generateMessage(String message, Long id) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(id));
+        sendMessage.setText(message);
+        return sendMessage;
     }
 
     private void putPreviousCommand(Long chatId, String command) {

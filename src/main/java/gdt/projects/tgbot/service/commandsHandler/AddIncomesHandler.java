@@ -1,4 +1,4 @@
-package gdt.projects.tgbot.service.CommandsHandler;
+package gdt.projects.tgbot.service.commandsHandler;
 
 import gdt.projects.tgbot.enums.BotCommandsEnum;
 import org.springframework.stereotype.Component;
@@ -7,11 +7,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class AddSpendsHandler implements BotServiceCommandsHandler{
+public class AddIncomesHandler implements BotServiceCommandsHandler {
 
-    protected AddSpendsHandler() {}
+    protected AddIncomesHandler(){}
 
-    private static final BotCommandsEnum COMMAND_TYPE = BotCommandsEnum.ADD_SPEND;
+    private static final BotCommandsEnum COMMAND_TYPE = BotCommandsEnum.ADD_INCOME;
 
     @Override
     public BotCommandsEnum getType() {
@@ -20,7 +20,7 @@ public class AddSpendsHandler implements BotServiceCommandsHandler{
 
     @Override
     public void processCommand(SendMessage response) {
-        String message = "Добавьте сумму ваших расходов.";
+        String message = "Отправьте пожалуйста сумму полученного дохода.";
         response.setText(new String(message.getBytes(), StandardCharsets.UTF_8));
     }
 }

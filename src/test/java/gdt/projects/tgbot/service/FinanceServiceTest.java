@@ -1,6 +1,7 @@
 package gdt.projects.tgbot.service;
 
 import com.google.common.base.Charsets;
+import gdt.projects.tgbot.enums.BotCommandsEnum;
 import gdt.projects.tgbot.repository.IncomeRepository;
 import gdt.projects.tgbot.repository.SpendRepository;
 import org.junit.Assert;
@@ -44,7 +45,7 @@ class FinanceServiceTest {
     public void addIncomeTest() {
         String price = "200";
         String expected = "ƒоход в размере " + price + " был успешно добавлен.";
-        String message = financeService.addFinanceOperation("/addIncome", price, 300L);
+        String message = financeService.addFinanceOperation(BotCommandsEnum.ADD_INCOME, price, 300L);
 
 
         assertEquals(expected, message);
@@ -55,7 +56,7 @@ class FinanceServiceTest {
     public void addSpendTest() {
         String price = "200";
         String expected = "–асход в размере " + price + " был успешно добавлен.";
-        String spendMessage = financeService.addFinanceOperation("/addSpend", price, 300L);
+        String spendMessage = financeService.addFinanceOperation(BotCommandsEnum.ADD_SPEND, price, 300L);
 
         assertEquals(expected, spendMessage);
     }

@@ -4,6 +4,7 @@ import gdt.projects.tgbot.entity.Income;
 import gdt.projects.tgbot.entity.Spend;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -36,6 +37,15 @@ class IncomeRepositoryTest {
 
         int expectedSpendListSize = 5;
         assertEquals(expectedSpendListSize, incomeList.size());
+    }
+
+    @Test
+    public void testSave() {
+        for(int i = 0; i < 10; i++) {
+            incomeRepository.save(new Income());
+        }
+        List<Income> incomeList = incomeRepository.findAll();
+        assertEquals(15, incomeList.size());
     }
 }
 
